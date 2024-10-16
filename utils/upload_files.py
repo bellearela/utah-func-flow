@@ -1,4 +1,5 @@
 from datetime import datetime
+import os
 import itertools
 import numpy as np
 import pandas as pd
@@ -17,7 +18,11 @@ def upload_files(start_date, files, flow_class):
     output_files = 'user_output_files'
 
     for file in files:
-        file_name = output_files + '/' + file.split('/')[1].split('.csv')[0]
+        # import pdb; pdb.set_trace()
+        gage_name = file.split('/')[1].split('.csv')[0]
+        if not os.path.isdir(output_files + '/' + gage_name):
+            os.makedirs(output_files + '/' + gage_name)
+        file_name = output_files + '/' + gage_name + '/' + gage_name
         dataset = read_csv_to_arrays(file)
         matrix = MatrixConversion(
             dataset['date'], dataset['flow'], start_date)
@@ -31,7 +36,7 @@ def upload_files(start_date, files, flow_class):
         write_to_csv(file_name, result, 'drh')
         write_to_csv(file_name, result, 'annual_flow_result')
         write_to_csv(file_name, result, 'parameters', flow_class)
-        # draw_plots(file_name, result)
+        draw_plots(file_name, result)
         
     return True
 
@@ -237,13 +242,13 @@ def draw_plots(file_name, results):
         year = results['year_ranges'][index]
         # import pdb; pdb.set_trace()
         if fall_timings[index+1] is not None:
-            plt.axvline(fall_timings[index+1], ls=":", c="blue")
+            plt.axvline(fall_timings[index+1], ls=":", c="blue", label="fall pulse")
         if wet_timings[index+1] is not None:
-            plt.axvline(wet_timings[index+1], ls=":", c="green")
+            plt.axvline(wet_timings[index+1], ls=":", c="green", label="start of wet season")
         if spring_timings[index+1] is not None:
-            plt.axvline(spring_timings[index+1], ls=":", c="orange")
+            plt.axvline(spring_timings[index+1], ls=":", c="orange", label="start of spring recession")
         if summer_timings[index+1] is not None:
-            plt.axvline(summer_timings[index+1], ls=":", c="red")
+            plt.axvline(summer_timings[index+1], ls=":", c="red", label="start of dry season")
         ax.legend()
         plt.title("Gage #{}, WY {}".format(file_name.split("/")[1], year))
         plt.savefig(file_name + '_{}.png'.format(year), bbox_inches='tight')

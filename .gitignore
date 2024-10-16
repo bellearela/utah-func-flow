@@ -14,7 +14,7 @@ pre_processFiles/Data
 node_modules
 .flaskenv
 user_input_files/*.csv
-user_output_files/*.csv
+user_output_files/*
 *.pyc
 *.dot
 *.png
