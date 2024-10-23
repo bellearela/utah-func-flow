@@ -100,6 +100,14 @@ def calc_summer_baseflow_durations_magnitude(flow_matrix, summer_start_dates, fa
             else:
                 flow_data_flush = None
                 flow_data_wet = None
+            # Utah func flows: add summer duration based on a fixed end date (Oct 15)
+            if not pd.isnull(summer_start_date):
+                su_date = int(summer_start_date)
+                flow_data_Oct = list(flow_matrix[su_date:, column_number]) + list(flow_matrix[:15, column_number])
+                summer_wet_durations.append(len(flow_data_Oct))
+            else:
+                summer_wet_durations.append(None)
+        
         else:
             if not pd.isnull(summer_start_date) and not pd.isnull(fall_flush_wet_dates[column_number + 1]):
                 su_date = int(summer_start_date)
@@ -115,26 +123,34 @@ def calc_summer_baseflow_durations_magnitude(flow_matrix, summer_start_dates, fa
             else:
                 flow_data_flush = None
                 flow_data_wet = None
+            # Utah func flows: add summer duration based on a fixed end date (Oct 15)
+            if not pd.isnull(summer_start_date):
+                su_date = int(summer_start_date)
+                flow_data_Oct = list(flow_matrix[su_date:, column_number]) + list(flow_matrix[:15, column_number + 1])
+                summer_wet_durations.append(len(flow_data_Oct))
+            else:
+                summer_wet_durations.append(None)
+        
 
         if flow_data_flush and flow_data_wet:
             summer_90_magnitudes.append(np.nanpercentile(flow_data_wet, 90))
             summer_50_magnitudes.append(np.nanpercentile(flow_data_wet, 50))
             summer_flush_durations.append(len(flow_data_flush))
-            summer_wet_durations.append(len(flow_data_wet))
+            # summer_wet_durations.append(len(flow_data_wet))
             summer_no_flow_counts.append(
                 len(flow_data_wet) - np.count_nonzero(flow_data_wet))
         elif not flow_data_flush and flow_data_wet:
             summer_90_magnitudes.append(np.nanpercentile(flow_data_wet, 90))
             summer_50_magnitudes.append(np.nanpercentile(flow_data_wet, 50))
             summer_flush_durations.append(None)
-            summer_wet_durations.append(len(flow_data_wet))
+            # summer_wet_durations.append(len(flow_data_wet))
             summer_no_flow_counts.append(
                 len(flow_data_wet) - np.count_nonzero(flow_data_wet))
         else:
             summer_90_magnitudes.append(None)
             summer_50_magnitudes.append(None)
             summer_flush_durations.append(None)
-            summer_wet_durations.append(None)
+            # summer_wet_durations.append(None)
             summer_no_flow_counts.append(None)
 
     return summer_90_magnitudes, summer_50_magnitudes, summer_flush_durations, summer_wet_durations, summer_no_flow_counts
