@@ -13,7 +13,7 @@ pre_processFiles/rawFiles/*/*.csv
 pre_processFiles/Data
 node_modules
 .flaskenv
-user_input_files/*.csv
+user_input_files/
 user_output_files/*
 *.pyc
 *.dot

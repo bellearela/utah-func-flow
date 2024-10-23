@@ -18,7 +18,6 @@ def upload_files(start_date, files, flow_class):
     output_files = 'user_output_files'
 
     for file in files:
-        # import pdb; pdb.set_trace()
         gage_name = file.split('/')[1].split('.csv')[0]
         if not os.path.isdir(output_files + '/' + gage_name):
             os.makedirs(output_files + '/' + gage_name)
@@ -101,7 +100,7 @@ def get_result(matrix, julian_start_date, flow_class):
     result["summer"]["no_flow_counts"] = calculated_metrics.summer_no_flow_counts
 
     result["spring"] = {}
-    result["spring"]["magnitudes"] = calculated_metrics.spring_magnitudes
+    # result["spring"]["magnitudes"] = calculated_metrics.spring_magnitudes
     # result["spring"]["timings_julian"] = list(map(
     #     remove_offset_from_julian_date, calculated_metrics.spring_timings, itertools.repeat(julian_start_date)))
     result["spring"]["timings_water"] = calculated_metrics.spring_timings
