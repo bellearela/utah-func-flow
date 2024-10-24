@@ -310,7 +310,7 @@ class Gauge:
         # result_matrix.append(self.summer_no_flow_counts)
 
         # Exceedance percentiles translated to recurrence intervals for output: exc_50 -> peak_2, exc_20 -> peak_5, exc_10 -> peak_10
-        column_header = ['Year', 'FA_Mag','FA_Tim', 'FA_Dur', 'Wet_BFL_Mag_10', 'Wet_BFL_Mag_50','Wet_Tim', 'Wet_BFL_Dur', 'Peak_2', 'Peak_5', 'Peak_10', 'Peak_Dur_2', 'Peak_Dur_5', 'Peak_Dur_10', 'Peak_Fre_2', 'Peak_Fre_5', 'Peak_Fre_10', 'SP_Mag', 'SP_Tim', 'SP_Dur', 'SP_ROC', 'SLF_Mag_50', 'SLF_Mag_90', 'SLF_Tim', 'SLF_Dur_WS']
+        column_header = ['Year', 'FA_Mag','FA_Tim', 'FA_Dur', 'HF_Mag_10', 'HF_Mag_50','HF_Tim', 'HF_Dur', 'Peak_2', 'Peak_5', 'Peak_10', 'Peak_Dur_2', 'Peak_Dur_5', 'Peak_Dur_10', 'Peak_Fre_2', 'Peak_Fre_5', 'Peak_Fre_10', 'SP_Mag', 'SP_Tim', 'SP_Dur', 'SP_ROC', 'SLF_Mag_50', 'SLF_Mag_90', 'SLF_Tim', 'SLF_Dur_WS']
 
         wateryear_type_matrix = create_wateryear_labels(result_matrix)
         np.savetxt("post_processedFiles/Wateryear_Type/{}.csv".format(
