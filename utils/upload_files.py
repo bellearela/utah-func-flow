@@ -99,6 +99,11 @@ def get_result(matrix, julian_start_date, flow_class):
     # result["summer"]["durations_flush"] = calculated_metrics.summer_flush_durations
     result["summer"]["no_flow_counts"] = calculated_metrics.summer_no_flow_counts
 
+    result["wlf"] = {}
+    result["wlf"]["magnitudes_fifty"] = calculated_metrics.wlf_mag_50
+    result["wlf"]["magnitudes_ninety"] = calculated_metrics.wlf_mag_90
+    result["wlf"]["durations"] = calculated_metrics.wlf_dur
+
     result["spring"] = {}
     # result["spring"]["magnitudes"] = calculated_metrics.spring_magnitudes
     # result["spring"]["timings_julian"] = list(map(
@@ -114,6 +119,10 @@ def get_result(matrix, julian_start_date, flow_class):
     #     remove_offset_from_julian_date, calculated_metrics.fall_wet_timings, itertools.repeat(julian_start_date)))
     result["wet"]["wet_timings_water"] = calculated_metrics.fall_wet_timings
     result["wet"]["bfl_durs"] = calculated_metrics.wet_bfl_durs
+    
+    result["hfa"] = {}
+    result["hfa"]["ROC_daily"] = calculated_metrics.hfa_ROC_daily
+    result["hfa"]["ROC_1090"] = calculated_metrics.hfa_ROC_1090
 
     return result
 
@@ -148,8 +157,10 @@ def write_to_csv(file_name, result, file_type, *args):
         dict_to_array(result['fall'], 'fall', dataset)
         dict_to_array(result['wet'], 'wet', dataset)
         dict_to_array(result['winter'], 'winter', dataset)
+        dict_to_array(result['hfa'], 'hfa', dataset)
         dict_to_array(result['spring'], 'spring', dataset)
         dict_to_array(result['summer'], 'summer', dataset)
+        dict_to_array(result['wlf'], 'wlf', dataset)
         a = np.array(dataset)
         np.savetxt(file_name + '_' + file_type + '.csv', a, delimiter=',',
                    fmt='%s', header='Year, ' + year_ranges, comments='')

@@ -14,6 +14,9 @@ TYPES = {
     'summer_durations_flush': "SLF_Dur_WSI",
     'summer_durations_wet': "SLF_Dur_WS",
     'summer_no_flow_counts': "SLF_No_Flow",
+    'wlf_magnitudes_fifty': "WLF_Mag_50",
+    'wlf_magnitudes_ninety': "WLF_Mag_90",
+    'wlf_durations': "WLF_Dur",
     'fall_timings_julian': "FA_Tim_julian",
     'fall_timings_water': "FA_Tim",
     'fall_magnitudes': "FA_Mag",
@@ -23,6 +26,8 @@ TYPES = {
     'wet_baseflows_10': "HF_Mag_10",
     'wet_baseflows_50': "HF_Mag_50",
     'wet_bfl_durs': "HF_Dur",
+    'hfa_ROC_daily': "HFA_ROC_daily",
+    'hfa_ROC_1090': "HFA_ROC_1090",
 
     'winter_timings__two': "Tim_2",
     'winter_timings__five': "Tim_5",
