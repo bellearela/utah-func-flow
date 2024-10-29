@@ -251,14 +251,14 @@ def draw_plots(file_name, results):
         ax.set_ylabel('Flow')
         year = results['year_ranges'][index]
         # import pdb; pdb.set_trace()
-        if fall_timings[index+1] is not None:
-            plt.axvline(fall_timings[index+1], ls=":", c="blue", label="fall pulse")
+        # if fall_timings[index+1] is not None:
+        #     plt.axvline(fall_timings[index+1], ls=":", c="blue", label="fall pulse")
         if wet_timings[index+1] is not None:
-            plt.axvline(wet_timings[index+1], ls=":", c="green", label="start of wet season")
+            plt.axvline(wet_timings[index+1], ls=":", c="#00aef0", label="start of high flow")
         if spring_timings[index+1] is not None:
-            plt.axvline(spring_timings[index+1], ls=":", c="orange", label="start of spring recession")
+            plt.axvline(spring_timings[index+1], ls=":", c="#01b04d", label="start of recession")
         if summer_timings[index+1] is not None:
-            plt.axvline(summer_timings[index+1], ls=":", c="red", label="start of dry season")
+            plt.axvline(summer_timings[index+1], ls=":", c="#f84da7", label="start of summer low flow")
         ax.legend()
         plt.title("Gage #{}, WY {}".format(file_name.split("/")[1], year))
         plt.savefig(file_name + '_{}.png'.format(year), bbox_inches='tight')
