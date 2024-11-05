@@ -25,10 +25,13 @@ def calc_fall_winter_baseflow(flow_matrix, fall_wet_timings, spring_timings):
             for flow_index, data in enumerate(flow_data):
                 if flow_index == len(flow_data) - 1:
                     continue
-                elif flow_data[flow_index + 1] > flow_data[flow_index]: # record positive daily change only
+                elif flow_data[flow_index + 1] > flow_data[flow_index] and flow_data[flow_index] > 0: # record positive daily change only
                     daily_roc.append(
                         (flow_data[flow_index + 1] - flow_data[flow_index]) / flow_data[flow_index]) # percentage units
-            hfa_ROC_daily.append(np.nanmedian(daily_roc))
+            if len(daily_roc) == 0:
+                hfa_ROC_daily.append(None)
+            else:
+                hfa_ROC_daily.append(np.nanmedian(daily_roc))
             # Calc ROC for high flow ascension, 10th to 90th slope
             tenth = np.nanpercentile(flow_data, 10)
             nintieth = np.nanpercentile(flow_data, 90)
