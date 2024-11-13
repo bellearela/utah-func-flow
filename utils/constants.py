@@ -12,7 +12,7 @@ TYPES = {
     'summer_magnitudes_ninety': "SLF_Mag_90",
     'summer_magnitudes_fifty': "SLF_Mag_50",
     'summer_durations_flush': "SLF_Dur_WSI",
-    'summer_durations_wet': "SLF_Dur_WS",
+    'summer_durations_wet': "SLF_Dur",
     'summer_no_flow_counts': "SLF_No_Flow",
     'wlf_magnitudes_fifty': "WLF_Mag_50",
     'wlf_magnitudes_ninety': "WLF_Mag_90",
