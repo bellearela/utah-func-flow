@@ -87,31 +87,27 @@ def calc_summer_baseflow_durations_magnitude(flow_matrix, summer_start_dates, fa
     wlf_mag_50 = []
     wlf_mag_90 = []
     wlf_dur = []
+    slf_dur = []
+    slf_mag_50 = []
+    slf_mag_90 = []
 
     for column_number, summer_start_date in enumerate(summer_start_dates):
-        if column_number == len(summer_start_dates) - 1:
-            if not pd.isnull(summer_start_date) and not pd.isnull(fall_flush_wet_dates[column_number]):
-                su_date = int(summer_start_date)
-                wet_date = int(fall_flush_wet_dates[column_number])
-                if not pd.isnull(fall_flush_dates[column_number]):
-                    fl_date = int(fall_flush_dates[column_number])
-                    flow_data_flush = list(
-                        flow_matrix[su_date:, column_number]) + list(flow_matrix[:fl_date, column_number])
-                if not pd.isnull(fall_flush_wet_dates[column_number]):
-                    flow_data_wet = list(
-                        flow_matrix[su_date:, column_number]) + list(flow_matrix[:wet_date, column_number])
-            else:
-                flow_data_flush = None
-                flow_data_wet = None
-            # Utah func flows: add summer duration based on a fixed end date (Oct 15)
-            if not pd.isnull(summer_start_date):
-                su_date = int(summer_start_date)
-                flow_data_Oct = list(flow_matrix[su_date:, column_number]) + list(flow_matrix[:15, column_number])
-                summer_wet_durations.append(len(flow_data_Oct))
-            else:
-                summer_wet_durations.append(None)
+        if column_number == len(summer_start_dates) - 1: # calcs for final year on record
+            # Final year on record does not include data for portion of low flow period after Sept 30th
+            # Do not calculate metrics that depend on the subsequent high flow start date. 
+            summer_90_magnitudes.append(None)
+            summer_50_magnitudes.append(None)
+            summer_flush_durations.append(None)
+            summer_wet_durations.append(None)
+            summer_no_flow_counts.append(None)
+            wlf_mag_50.append(None)
+            wlf_mag_90.append(None)
+            wlf_dur.append(None)
+            slf_dur.append(None)
+            slf_mag_50.append(None)
+            slf_mag_90.append(None)
         
-        else:
+        else: # for every year up until last one
             if not pd.isnull(summer_start_date) and not pd.isnull(fall_flush_wet_dates[column_number + 1]):
                 su_date = int(summer_start_date)
                 wet_date = int(fall_flush_wet_dates[column_number + 1])
@@ -126,50 +122,51 @@ def calc_summer_baseflow_durations_magnitude(flow_matrix, summer_start_dates, fa
             else:
                 flow_data_flush = None
                 flow_data_wet = None
-            # Utah func flows: add summer duration based on a fixed end date (Oct 15)
+            # Utah func flows: add summer duration based on a fixed end date (Oct 15) and winter low flow (after Oct 15)
             if not pd.isnull(summer_start_date):
                 su_date = int(summer_start_date)
                 flow_data_Oct = list(flow_matrix[su_date:, column_number]) + list(flow_matrix[:15, column_number + 1])
-                summer_wet_durations.append(len(flow_data_Oct))
+                slf_dur.append(len(flow_data_Oct))
+                slf_mag_50.append(np.nanpercentile(flow_data_Oct, 50))
+                slf_mag_90.append(np.nanpercentile(flow_data_Oct, 90))
+
+                wet_date = int(fall_flush_wet_dates[column_number + 1])
+                flow_data_WLF = list(
+                flow_matrix[16:wet_date, column_number])
+                wlf_mag_50.append(np.nanpercentile(flow_data_WLF, 50))
+                wlf_mag_90.append(np.nanpercentile(flow_data_WLF, 90))
+                wlf_dur.append(len(flow_data_WLF))
             else:
-                summer_wet_durations.append(None)
-        
+                slf_dur.append(None)
+                slf_mag_50.append(None)
+                slf_mag_90.append(None)
+                wlf_mag_50.append(None)
+                wlf_mag_90.append(None)
+                wlf_dur.append(None)
 
         if flow_data_flush and flow_data_wet:
             summer_90_magnitudes.append(np.nanpercentile(flow_data_wet, 90))
             summer_50_magnitudes.append(np.nanpercentile(flow_data_wet, 50))
             summer_flush_durations.append(len(flow_data_flush))
-            # summer_wet_durations.append(len(flow_data_wet))
+            summer_wet_durations.append(len(flow_data_wet))
             summer_no_flow_counts.append(
                 len(flow_data_wet) - np.count_nonzero(flow_data_wet))
         elif not flow_data_flush and flow_data_wet:
             summer_90_magnitudes.append(np.nanpercentile(flow_data_wet, 90))
             summer_50_magnitudes.append(np.nanpercentile(flow_data_wet, 50))
             summer_flush_durations.append(None)
-            # summer_wet_durations.append(len(flow_data_wet))
+            summer_wet_durations.append(len(flow_data_wet))
             summer_no_flow_counts.append(
                 len(flow_data_wet) - np.count_nonzero(flow_data_wet))
         else:
             summer_90_magnitudes.append(None)
             summer_50_magnitudes.append(None)
             summer_flush_durations.append(None)
-            # summer_wet_durations.append(None)
+            summer_wet_durations.append(None)
             summer_no_flow_counts.append(None)
-        
-        # Add calc for Utah Winter Low Flow component
-        if not pd.isnull(fall_flush_wet_dates[column_number]):
-            wet_date = int(fall_flush_wet_dates[column_number])
-            flow_data_WLF = list(
-                    flow_matrix[16:wet_date, column_number])
-            wlf_mag_50.append(np.nanpercentile(flow_data_WLF, 50))
-            wlf_mag_90.append(np.nanpercentile(flow_data_WLF, 90))
-            wlf_dur.append(len(flow_data_WLF))
-        else:
-            wlf_mag_50.append(None)
-            wlf_mag_90.append(None)
-            wlf_dur.append(None)
 
-    return summer_90_magnitudes, summer_50_magnitudes, summer_flush_durations, summer_wet_durations, summer_no_flow_counts, wlf_mag_50, wlf_mag_90, wlf_dur
+    return summer_90_magnitudes, summer_50_magnitudes, summer_flush_durations, summer_wet_durations, summer_no_flow_counts, \
+wlf_mag_50, wlf_mag_90, wlf_dur, slf_mag_50, slf_mag_90, slf_dur
 
 
 # def _summer_baseflow_plot(x_axis, column_number, flow_data, spl, spl_first, start_dates, threshold, max_flow_index, maxarray):
