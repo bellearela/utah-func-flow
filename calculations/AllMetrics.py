@@ -85,17 +85,21 @@ class Metrics:
         self.fall_durations = fall_durations
 
     def summer_baseflow_durations_magnitude(self):
-        summer_90_magnitudes, summer_50_magnitudes, summer_flush_durations, summer_wet_durations, summer_no_flow_counts, wlf_mag_50, wlf_mag_90, wlf_dur = calc_summer_baseflow_durations_magnitude(
+        summer_90_magnitudes, summer_50_magnitudes, summer_flush_durations, summer_wet_durations, summer_no_flow_counts, \
+            wlf_mag_50, wlf_mag_90, wlf_dur, slf_mag_50, slf_mag_90, slf_dur = calc_summer_baseflow_durations_magnitude(
             self.flow_matrix, self.summer_timings, self.fall_timings, self.fall_wet_timings)
         self.summer_90_magnitudes = summer_90_magnitudes
         self.summer_50_magnitudes = summer_50_magnitudes
         self.summer_flush_durations = summer_flush_durations
         self.summer_wet_durations = summer_wet_durations
         self.summer_no_flow_counts = summer_no_flow_counts
-        # WLF metrics for Utah added here
+        # WLF and SLF metrics for Utah added here
         self.wlf_mag_50 = wlf_mag_50
         self.wlf_mag_90 = wlf_mag_90
         self.wlf_dur = wlf_dur
+        self.slf_mag_50 = slf_mag_50
+        self.slf_mag_90 = slf_mag_90
+        self.slf_dur = slf_dur
 
     def spring_transition_timing_magnitude(self):
         params = self.params['spring_params'] if self.params else spring_params

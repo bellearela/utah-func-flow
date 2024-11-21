@@ -41,7 +41,6 @@ def upload_files(start_date, files, flow_class):
 
 def get_result(matrix, julian_start_date, flow_class):
 
-
     result = {}
     result["year_ranges"] = [int(i) + 1 for i in matrix.year_array]
     result["flow_matrix"] = np.where(
@@ -104,6 +103,11 @@ def get_result(matrix, julian_start_date, flow_class):
     result["wlf"]["magnitudes_ninety"] = calculated_metrics.wlf_mag_90
     result["wlf"]["durations"] = calculated_metrics.wlf_dur
 
+    result["slf"] = {}
+    result["slf"]["magnitudes_fifty"] = calculated_metrics.slf_mag_50
+    result["slf"]["magnitudes_ninety"] = calculated_metrics.slf_mag_90
+    result["slf"]["durations"] = calculated_metrics.slf_dur
+
     result["spring"] = {}
     # result["spring"]["magnitudes"] = calculated_metrics.spring_magnitudes
     # result["spring"]["timings_julian"] = list(map(
@@ -161,6 +165,7 @@ def write_to_csv(file_name, result, file_type, *args):
         dict_to_array(result['spring'], 'spring', dataset)
         dict_to_array(result['summer'], 'summer', dataset)
         dict_to_array(result['wlf'], 'wlf', dataset)
+        dict_to_array(result['slf'], 'slf', dataset)
         a = np.array(dataset)
         np.savetxt(file_name + '_' + file_type + '.csv', a, delimiter=',',
                    fmt='%s', header='Year, ' + year_ranges, comments='')

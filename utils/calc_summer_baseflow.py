@@ -106,6 +106,7 @@ def calc_summer_baseflow_durations_magnitude(flow_matrix, summer_start_dates, fa
             slf_dur.append(None)
             slf_mag_50.append(None)
             slf_mag_90.append(None)
+            continue
         
         else: # for every year up until last one
             if not pd.isnull(summer_start_date) and not pd.isnull(fall_flush_wet_dates[column_number + 1]):

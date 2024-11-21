@@ -46,6 +46,9 @@ class Gauge:
         self.wlf_mag_50 = None
         self.wlf_mag_90 = None
         self.wlf_dur = None
+        self.slf_mag_50 = None
+        self.slf_mag_90 = None
+        self.slf_dur = None
         self.fall_timings = None
         self.fall_magnitudes = None
         self.fall_durations = None
@@ -126,7 +129,8 @@ class Gauge:
         self.summer_timings = np.array(summer_timings, dtype=float)
 
     def summer_baseflow_durations_magnitude(self):
-        summer_90_magnitudes, summer_50_magnitudes, summer_flush_durations, summer_wet_durations, summer_no_flow_counts, wlf_mag_50, wlf_mag_90, wlf_dur = calc_summer_baseflow_durations_magnitude(
+        summer_90_magnitudes, summer_50_magnitudes, summer_flush_durations, summer_wet_durations, summer_no_flow_counts, \
+            wlf_mag_50, wlf_mag_90, wlf_dur, slf_mag_50, slf_mag_90, slf_dur = calc_summer_baseflow_durations_magnitude(
             self.flow_matrix, self.summer_timings, self.fall_timings, self.fall_wet_timings)
         self.summer_90_magnitudes = np.array(
             summer_90_magnitudes, dtype=float)
@@ -144,6 +148,12 @@ class Gauge:
             wlf_mag_90, dtype=float)
         self.wlf_dur = np.array(
             wlf_dur, dtype=float)
+        self.slf_mag_50 = np.array(
+            slf_mag_50, dtype=float)
+        self.slf_mag_90 = np.array(
+            slf_mag_90, dtype=float)
+        self.slf_dur = np.array(
+            slf_dur, dtype=float)
 
     def fall_flush_timings_durations(self):
         summer_timings = calc_start_of_summer(
@@ -270,6 +280,12 @@ class Gauge:
             self.wlf_mag_90, high_end) else ele for index, ele in enumerate(self.wlf_mag_90)]
         self.wlf_dur = [np.nan if ele < np.nanpercentile(self.wlf_dur, low_end) or ele > np.nanpercentile(
             self.wlf_dur, high_end) else ele for index, ele in enumerate(self.wlf_dur)]
+        self.slf_mag_50 = [np.nan if ele < np.nanpercentile(self.slf_mag_50, low_end) or ele > np.nanpercentile(
+            self.slf_mag_50, high_end) else ele for index, ele in enumerate(self.slf_mag_50)]
+        self.slf_mag_90 = [np.nan if ele < np.nanpercentile(self.slf_mag_90, low_end) or ele > np.nanpercentile(
+            self.slf_mag_90, high_end) else ele for index, ele in enumerate(self.slf_mag_90)]
+        self.slf_dur = [np.nan if ele < np.nanpercentile(self.slf_dur, low_end) or ele > np.nanpercentile(
+            self.slf_dur, high_end) else ele for index, ele in enumerate(self.slf_dur)]
         fall_timings = [np.nan if ele < np.nanpercentile(self.fall_timings, low_end) or ele > np.nanpercentile(
             self.fall_timings, high_end) else ele for index, ele in enumerate(self.fall_timings)]
         fall_timings_julian = [np.nan if ele < np.nanpercentile(fall_timings_julian, low_end) or ele > np.nanpercentile(
@@ -333,12 +349,17 @@ class Gauge:
         result_matrix.append(summer_timings)
         result_matrix.append(self.summer_wet_durations)
         # result_matrix.append(self.summer_no_flow_counts)
-        result_matrix.append(self.wfl_mag_50)
-        result_matrix.append(self.wfl_mag_90)
-        result_matrix.append(self.wfl_dur)
+        result_matrix.append(self.wlf_mag_50)
+        result_matrix.append(self.wlf_mag_90)
+        result_matrix.append(self.wlf_dur)
+        result_matrix.append(self.slf_mag_50)
+        result_matrix.append(self.slf_mag_90)
+        result_matrix.append(self.slf_dur)
 
         # Exceedance percentiles translated to recurrence intervals for output: exc_50 -> peak_2, exc_20 -> peak_5, exc_10 -> peak_10
-        column_header = ['Year', 'FA_Mag','FA_Tim', 'FA_Dur', 'HF_Mag_10', 'HF_Mag_50','HF_Tim', 'HF_Dur', 'Peak_2', 'Peak_5', 'Peak_10', 'Peak_Dur_2', 'Peak_Dur_5', 'Peak_Dur_10', 'Peak_Fre_2', 'Peak_Fre_5', 'Peak_Fre_10', 'SP_Mag', 'SP_Tim', 'SP_Dur', 'SP_ROC', 'SLF_Mag_50', 'SLF_Mag_90', 'SLF_Tim', 'SLF_Dur_WS', 'WLF_Mag_50', 'WLF_Mag_90', 'WLF_Dur']
+        column_header = ['Year', 'FA_Mag','FA_Tim', 'FA_Dur', 'HF_Mag_10', 'HF_Mag_50','HF_Tim', 'HF_Dur', 'Peak_2', 'Peak_5', 'Peak_10', 'Peak_Dur_2', 'Peak_Dur_5', 'Peak_Dur_10', \
+                         'Peak_Fre_2', 'Peak_Fre_5', 'Peak_Fre_10', 'SP_Mag', 'SP_Tim', 'SP_Dur', 'SP_ROC', 'LF_Mag_50', 'LF_Mag_90', 'LF_Tim', 'LF_Dur_WS', \
+                            'WLF_Mag_50', 'WLF_Mag_90', 'WLF_Dur', 'SLF_Mag_50', 'SLF_Mag_90', 'SLF_Dur']
 
         wateryear_type_matrix = create_wateryear_labels(result_matrix)
         np.savetxt("post_processedFiles/Wateryear_Type/{}.csv".format(
