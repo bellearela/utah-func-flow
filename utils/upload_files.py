@@ -126,7 +126,7 @@ def get_result(matrix, julian_start_date, flow_class):
     
     result["hfa"] = {}
     result["hfa"]["ROC_daily"] = calculated_metrics.hfa_ROC_daily
-    result["hfa"]["ROC_1090"] = calculated_metrics.hfa_ROC_1090
+    # result["hfa"]["ROC_1090"] = calculated_metrics.hfa_ROC_1090
 
     return result
 
