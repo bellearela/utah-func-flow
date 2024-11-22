@@ -21,10 +21,10 @@ def calc_start_of_summer(matrix, class_number, summer_params=def_summer_params):
         if pd.isnull(matrix[:, column_number]).sum() > max_nan_allowed_per_year or np.count_nonzero(matrix[:, column_number] == 0) > max_zero_allowed_per_year or max(matrix[:, column_number]) < min_flow_rate:
             continue
 
-        """Append each column with 30 more days from next column, except the last column"""
+        """Append each column with 15 more days from next column for peak detection, except the last column"""
         if column_number != len(matrix[0])-1:
             flow_data = list(matrix[:, column_number]) + \
-                list(matrix[:100, column_number+1])
+                list(matrix[:15, column_number+1])
         else:
             flow_data = matrix[:, column_number]
 
@@ -130,7 +130,11 @@ def calc_summer_baseflow_durations_magnitude(flow_matrix, summer_start_dates, fa
                 slf_dur.append(len(flow_data_Oct))
                 slf_mag_50.append(np.nanpercentile(flow_data_Oct, 50))
                 slf_mag_90.append(np.nanpercentile(flow_data_Oct, 90))
-
+            else:
+                slf_dur.append(None)
+                slf_mag_50.append(None)
+                slf_mag_90.append(None)
+            if not pd.isnull(fall_flush_wet_dates[column_number + 1]):
                 wet_date = int(fall_flush_wet_dates[column_number + 1])
                 flow_data_WLF = list(
                 flow_matrix[16:wet_date, column_number])
@@ -138,9 +142,6 @@ def calc_summer_baseflow_durations_magnitude(flow_matrix, summer_start_dates, fa
                 wlf_mag_90.append(np.nanpercentile(flow_data_WLF, 90))
                 wlf_dur.append(len(flow_data_WLF))
             else:
-                slf_dur.append(None)
-                slf_mag_50.append(None)
-                slf_mag_90.append(None)
                 wlf_mag_50.append(None)
                 wlf_mag_90.append(None)
                 wlf_dur.append(None)
