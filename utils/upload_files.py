@@ -178,7 +178,7 @@ def write_to_csv(file_name, result, file_type, *args):
                              ['standard_deviations'])
         supplementary.append(['CV'] + result['all_year']
                              ['coefficient_variations'])
-        supplementary.append(['DS_No_Flow'] + summer_no_flow)
+        supplementary.append(['LF_No_Flow'] + summer_no_flow)
         np.savetxt(file_name + '_supplementary_metrics.csv', supplementary, delimiter=',',
                    fmt='%s', header='Year, ' + year_ranges, comments='')
 
