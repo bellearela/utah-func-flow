@@ -120,7 +120,7 @@ class Metrics:
 
     def fall_winter_baseflow(self):
         wet_baseflows_10, wet_baseflows_50, wet_bfl_durs, hfa_ROC_daily, hfa_ROC_1090 = calc_fall_winter_baseflow(
-            self.flow_matrix, self.fall_wet_timings, self.spring_timings)
+            self.flow_matrix, self.fall_wet_timings, self.spring_timings, self.summer_timings)
         self.wet_baseflows_10 = wet_baseflows_10
         self.wet_baseflows_50 = wet_baseflows_50
         self.wet_bfl_durs = wet_bfl_durs
