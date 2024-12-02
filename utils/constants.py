@@ -8,7 +8,7 @@ TYPES = {
     'spring_durations': "HFR_Dur",
     'spring_rocs': "HFR_ROC",
     'summer_timings_julian': "LF_Tim_julian",
-    'summer_timings_water': "LF_Tim",
+    'summer_timings_water': "SLF_Tim",
     'summer_magnitudes_ninety': "LF_Mag_90",
     'summer_magnitudes_fifty': "LF_Mag_50",
     'summer_durations_flush': "LF_Dur_WSI",
