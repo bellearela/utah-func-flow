@@ -134,10 +134,10 @@ def calc_summer_baseflow_durations_magnitude(flow_matrix, summer_start_dates, fa
                 slf_dur.append(None)
                 slf_mag_50.append(None)
                 slf_mag_90.append(None)
-            if not pd.isnull(fall_flush_wet_dates[column_number + 1]):
-                wet_date = int(fall_flush_wet_dates[column_number + 1])
+            if not pd.isnull(fall_flush_wet_dates[column_number]):
+                wet_date = int(fall_flush_wet_dates[column_number])
                 flow_data_WLF = list(
-                flow_matrix[16:wet_date, column_number])
+                flow_matrix[15:wet_date-1, column_number]) # Start on Oct 16
                 wlf_mag_50.append(np.nanpercentile(flow_data_WLF, 50))
                 wlf_mag_90.append(np.nanpercentile(flow_data_WLF, 90))
                 wlf_dur.append(len(flow_data_WLF))
