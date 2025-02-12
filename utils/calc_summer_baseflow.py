@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd
 #import matplotlib.pyplot as plt
 import scipy.interpolate as ip
+import math
 from scipy.ndimage import gaussian_filter1d
 from utils.helpers import find_index, peakdet, replace_nan
 from params import summer_params as def_summer_params
@@ -23,10 +24,10 @@ def calc_start_of_summer(matrix, class_number, summer_params=def_summer_params):
 
         """Append each column with 15 more days from next column for peak detection, except the last column"""
         if column_number != len(matrix[0])-1:
-            flow_data = list(matrix[:, column_number]) + \
-                list(matrix[:15, column_number+1])
+            flow_data = list(np.copy(matrix[:, column_number])) + \
+                list(np.copy(matrix[:15, column_number+1]))
         else:
-            flow_data = matrix[:, column_number]
+            flow_data = np.copy(matrix[:, column_number])
 
         """Replace any NaNs with previous day's flow"""
         flow_data = replace_nan(flow_data)
@@ -120,6 +121,7 @@ def calc_summer_baseflow_durations_magnitude(flow_matrix, summer_start_dates, fa
                 if not pd.isnull(fall_flush_wet_dates[column_number + 1]):
                     flow_data_wet = list(
                         flow_matrix[su_date:, column_number]) + list(flow_matrix[:wet_date, column_number + 1])
+
             else:
                 flow_data_flush = None
                 flow_data_wet = None
@@ -130,6 +132,7 @@ def calc_summer_baseflow_durations_magnitude(flow_matrix, summer_start_dates, fa
                 slf_dur.append(len(flow_data_Oct))
                 slf_mag_50.append(np.nanpercentile(flow_data_Oct, 50))
                 slf_mag_90.append(np.nanpercentile(flow_data_Oct, 90))
+
             else:
                 slf_dur.append(None)
                 slf_mag_50.append(None)
@@ -145,6 +148,12 @@ def calc_summer_baseflow_durations_magnitude(flow_matrix, summer_start_dates, fa
                 wlf_mag_50.append(None)
                 wlf_mag_90.append(None)
                 wlf_dur.append(None)
+
+        # check for nan in flow data and remove 
+        if flow_data_wet is not None:
+            flow_data_wet = [x for x in flow_data_wet if not (isinstance(x, float) and math.isnan(x)) and x is not None]
+        if flow_data_flush is not None:
+            flow_data_flush = [x for x in flow_data_flush if not (isinstance(x, float) and math.isnan(x)) and x is not None]
 
         if flow_data_flush and flow_data_wet:
             summer_90_magnitudes.append(np.nanpercentile(flow_data_wet, 90))

@@ -21,11 +21,11 @@ class Metrics:
         self.end_year = end_year
         self.params = params
         self.flow_class = flow_class
-
+        
         if(self.start_year and self.end_year):
             self.year_ranges = year_ranges[start_year:end_year]
             self.flow_matrix = flow_matrix[:, start_year:end_year]
-
+        
         self.all_year()
         self.winter_highflow_annual()
         self.start_of_summer()
@@ -68,14 +68,12 @@ class Metrics:
             self.winter_magnitudes[percent] = winter_magnitudes[percent]
 
     def start_of_summer(self):
-
         params = self.params['summer_params'] if self.params else summer_params
         summer_timings = calc_start_of_summer(
             self.flow_matrix, self.flow_class, params)
         self.summer_timings = summer_timings
 
     def fall_flush_timings_durations(self):
-
         params = self.params['fall_params'] if self.params else fall_params
         fall_timings, fall_magnitudes, fall_wet_timings, fall_durations = calc_fall_flush_timings_durations(
             self.flow_matrix, self.summer_timings, self.flow_class, params)

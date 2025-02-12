@@ -187,7 +187,7 @@ class MatrixConversion:
                 self.years_array[index], julian_date, self.year_array, julian_start_date, days_in_year)
 
             flow_matrix[row][column] = self.flow_array[index]
-
+        
         self.flow_matrix = flow_matrix
 
 
@@ -312,7 +312,7 @@ def get_flow_matrix(years, julian_dates, flow, year_ranges, start_date):
             years[index], julian_date, year_ranges, julian_start_date, days_in_year)
 
         flow_matrix[row][column] = flow[index]
-
+     
     return flow_matrix
 
 

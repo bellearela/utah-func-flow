@@ -25,7 +25,7 @@ def upload_files(start_date, files, flow_class):
         dataset = read_csv_to_arrays(file)
         matrix = MatrixConversion(
             dataset['date'], dataset['flow'], start_date)
-
+        
         julian_start_date = datetime.strptime(
             "{}/2001".format(start_date), "%m/%d/%Y").timetuple().tm_yday
 
@@ -80,14 +80,14 @@ def get_result(matrix, julian_start_date, flow_class):
     result["winter"]["magnitudes"] = winter_magnitudes
     result["winter"]["durations"] = winter_durations
     result["winter"]["frequencys"] = winter_frequencys
-
+    
     result["fall"] = {}
     # result["fall"]["timings_julian"] = list(map(
     #     remove_offset_from_julian_date, calculated_metrics.fall_timings, itertools.repeat(julian_start_date)))
     result["fall"]["magnitudes"] = calculated_metrics.fall_magnitudes
     result["fall"]["timings_water"] = calculated_metrics.fall_timings
     result["fall"]["durations"] = calculated_metrics.fall_durations
-
+    
     result["summer"] = {}
     result["summer"]["magnitudes_fifty"] = calculated_metrics.summer_50_magnitudes
     result["summer"]["magnitudes_ninety"] = calculated_metrics.summer_90_magnitudes
@@ -97,17 +97,17 @@ def get_result(matrix, julian_start_date, flow_class):
     result["summer"]["durations_wet"] = calculated_metrics.summer_wet_durations
     # result["summer"]["durations_flush"] = calculated_metrics.summer_flush_durations
     result["summer"]["no_flow_counts"] = calculated_metrics.summer_no_flow_counts
-
+    
     result["wlf"] = {}
     result["wlf"]["magnitudes_fifty"] = calculated_metrics.wlf_mag_50
     result["wlf"]["magnitudes_ninety"] = calculated_metrics.wlf_mag_90
     result["wlf"]["durations"] = calculated_metrics.wlf_dur
-
+    
     result["slf"] = {}
     result["slf"]["magnitudes_fifty"] = calculated_metrics.slf_mag_50
     result["slf"]["magnitudes_ninety"] = calculated_metrics.slf_mag_90
     result["slf"]["durations"] = calculated_metrics.slf_dur
-
+    
     result["spring"] = {}
     # result["spring"]["magnitudes"] = calculated_metrics.spring_magnitudes
     # result["spring"]["timings_julian"] = list(map(
@@ -115,7 +115,7 @@ def get_result(matrix, julian_start_date, flow_class):
     result["spring"]["timings_water"] = calculated_metrics.spring_timings
     result["spring"]["durations"] = calculated_metrics.spring_durations
     result["spring"]["rocs"] = calculated_metrics.spring_rocs
-
+    
     result["wet"] = {}
     result["wet"]["baseflows_10"] = calculated_metrics.wet_baseflows_10
     result["wet"]["baseflows_50"] = calculated_metrics.wet_baseflows_50

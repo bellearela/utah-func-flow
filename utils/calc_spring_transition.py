@@ -26,7 +26,7 @@ def calc_spring_transition_timing_magnitude(flow_matrix, class_number, summer_ti
             continue
 
         """Get flow data and interpolate between None values"""
-        flow_data = flow_matrix[:, column_number]
+        flow_data = np.copy(flow_matrix[:, column_number])
         flow_data = replace_nan(flow_data)
         # Extract for use in optional plotting
         x_axis = list(range(len(flow_data)))

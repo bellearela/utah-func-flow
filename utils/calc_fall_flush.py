@@ -9,32 +9,29 @@ from utils.helpers import set_user_params
 
 def calc_fall_flush_timings_durations(flow_matrix, summer_timings, class_number, fall_params=def_fall_params):
     params = set_user_params(fall_params, def_fall_params)
-
     max_zero_allowed_per_year, max_nan_allowed_per_year, min_flow_rate, sigma, broad_sigma, wet_season_sigma, peak_sensitivity, peak_sensitivity_wet, max_flush_duration, min_flush_percentage, wet_threshold_perc, peak_detect_perc, flush_threshold_perc, min_flush_threshold, date_cutoff, slope_sensitivity = params.values()
 
     start_dates = []
     wet_dates = []
     durations = []
     mags = []
-
     for column_number, _ in enumerate(flow_matrix[0]):
-
         start_dates.append(None)
         wet_dates.append(None)
         durations.append(None)
         mags.append(None)
-
+        
         """Check to see if water year has more than allowed nan or zeros"""
         if np.isnan(flow_matrix[:, column_number]).sum() > max_nan_allowed_per_year or np.count_nonzero(flow_matrix[:, column_number] == 0) > max_zero_allowed_per_year or max(flow_matrix[:, column_number]) < min_flow_rate:
             continue
-
+        
         """Get flow data"""
-        flow_data = flow_matrix[:, column_number]
+        flow_data = np.copy(flow_matrix[:, column_number])
         x_axis = list(range(len(flow_data)))
-
+        
         """Interpolate between None values"""
         flow_data = replace_nan(flow_data)
-
+        
         """Return to Wet Season"""
         if class_number == 3 or class_number == 4 or class_number == 5 or class_number == 6 or class_number == 7 or class_number == 8:
             wet_season_filter_data = gaussian_filter1d(flow_data, 6)
@@ -53,7 +50,7 @@ def calc_fall_flush_timings_durations(flow_matrix, summer_timings, class_number,
         if return_date:
             wet_dates[-1] = return_date 
         broad_filter_data = gaussian_filter1d(flow_data, broad_sigma)
-
+        
         """Filter noise data with small sigma to find fall flush hump"""
         filter_data = gaussian_filter1d(flow_data, sigma)
 
@@ -78,7 +75,7 @@ def calc_fall_flush_timings_durations(flow_matrix, summer_timings, class_number,
         """Get flow magnitude threshold from previous summer's baseflow"""
         if column_number == 0:
             wet_date = wet_dates[0]
-            baseflow = list(flow_matrix[:wet_date, column_number])
+            baseflow = list(flow_matrix[:wet_date, column_number][:])
             # bs_mean = np.mean(baseflow)
             bs_med = np.nanpercentile(baseflow, 50)
         else:
@@ -88,12 +85,12 @@ def calc_fall_flush_timings_durations(flow_matrix, summer_timings, class_number,
                     wet_date = wet_dates[column_number] - 20
                 else:
                     wet_date = wet_dates[column_number]
-                baseflow = list(flow_matrix[summer_date:, column_number - 1]) + list(flow_matrix[:wet_date, column_number])
+                baseflow = list(flow_matrix[summer_date:, column_number - 1][:]) + list(flow_matrix[:wet_date, column_number][:])
                 # bs_mean = np.mean(baseflow)
             else:
-                baseflow = list(flow_matrix[summer_date:, column_number - 1])
+                baseflow = list(flow_matrix[summer_date:, column_number - 1][:])
             bs_med = np.nanpercentile(baseflow, 50)
-
+        
         """Get fall flush peak"""
         counter = 0
         # Only test duration for first half of fall flush peak
@@ -134,7 +131,7 @@ def calc_fall_flush_timings_durations(flow_matrix, summer_timings, class_number,
                 mags[-1] = flow_index[1]
                 break
             counter = counter + 1
-
+        
         """Check to see if last start_date falls behind the max_allowed_date"""
         if wet_dates[-1]:
             if bool(start_dates[-1] is None or start_dates[-1] > wet_dates[-1]) and wet_dates[-1]:
@@ -145,8 +142,8 @@ def calc_fall_flush_timings_durations(flow_matrix, summer_timings, class_number,
         current_duration, left, right = calc_fall_flush_durations_2(
             filter_data, start_dates[-1])
         durations[-1] = current_duration
-        # _plotter(x_axis, flow_data, filter_data, broad_filter_data, start_dates, wet_dates, column_number, left, right, maxarray, minarray, min_flush_magnitude, slope_detection_data)
         
+        # _plotter(x_axis, flow_data, filter_data, broad_filter_data, start_dates, wet_dates, column_number, left, right, maxarray, minarray, min_flush_magnitude, slope_detection_data)  
     return start_dates, mags, wet_dates, durations
 
 
