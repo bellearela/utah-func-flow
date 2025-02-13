@@ -3,6 +3,7 @@ import os
 import itertools
 import numpy as np
 import pandas as pd
+import math
 import matplotlib.pyplot as plt
 from utils.matrix_convert import MatrixConversion
 from calculations.AllMetrics import Metrics
@@ -166,6 +167,13 @@ def write_to_csv(file_name, result, file_type, *args):
         dict_to_array(result['summer'], 'summer', dataset)
         dict_to_array(result['wlf'], 'wlf', dataset)
         dict_to_array(result['slf'], 'slf', dataset)
+        # Change any nan to None for consistency in output file
+        for index, ls in enumerate(dataset):
+            for i_index, item in enumerate(ls):
+                if isinstance(item, str) == False and item is not None:
+                    if math.isnan(item):
+                        dataset[index][i_index] = None
+
         a = np.array(dataset)
         np.savetxt(file_name + '_' + file_type + '.csv', a, delimiter=',',
                    fmt='%s', header='Year, ' + year_ranges, comments='')
