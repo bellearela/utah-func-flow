@@ -97,6 +97,16 @@ def calc_winter_highflow_annual(matrix, exceedance_percent, winter_params = def_
             # change FFC peak metric to report annual peak flow instead of POR percentiles
             magnitude[i].append(exceedance_values[i])
 
+    # impose a POR limit of results: minimum 5 and 10 years of data for calculation
+    result_keys = magnitude.keys()
+    for key in result_keys:
+        # check if real values in magnitude equal five or more 
+        if len([x for x in magnitude[key] if x is not None]) < 10: # 5 or 10
+            magnitude[key] = [None] * len(magnitude[key])
+            freq[key] = [None] * len(freq[key])
+            duration[key] = [None] * len(duration[key])
+            timing[key] = [None] * len(timing[key])
+
     _timing = {2: timing[0], 5: timing[1], 10: timing[2], 20: timing[3], 50: timing[4], 12: timing[5], 15: timing[6], 110: timing[7], 120: timing[8],}
     _duration = {2: duration[0], 5: duration[1], 10: duration[2], 20: duration[3], 50: duration[4], 12: duration[5], 15: duration[6], 110: duration[7], 120: duration[8],}
     _freq = {2: freq[0], 5: freq[1], 10: freq[2], 20: freq[3], 50: freq[4], 12: freq[5], 15: freq[6], 110: freq[7], 120: freq[8],}

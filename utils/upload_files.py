@@ -227,8 +227,8 @@ def dict_to_array(data, field_type, dataset):
                 if key.find('timings') > -1:
                     continue
                 data = v
-                # remove two and five percentiles from output
-                if k.find('two') > -1 or k.find('five') > -1:
+                # remove everything except 2yr recurrence (50th percentile) from output
+                if k.find('two') > -1 or k.find('five') > -1 or k.find('ten') > -1 or k.find('twenty') > -1:
                     continue
                 else:
                     if k.find('_water') > -1:
