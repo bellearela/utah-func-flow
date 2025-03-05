@@ -43,11 +43,12 @@ class Metrics:
 
     def all_year(self):
         params = self.params['general_params'] if self.params else general_params
-        average_annual_flows, standard_deviations, coefficient_variations = calc_all_year(
+        average_annual_flows, standard_deviations, coefficient_variations, annual_peaks = calc_all_year(
             self.flow_matrix, params)
         self.average_annual_flows = average_annual_flows
         self.standard_deviations = standard_deviations
         self.coefficient_variations = coefficient_variations
+        self.annual_peaks = annual_peaks
 
     def winter_highflow_annual(self):
         params = self.params['winter_params'] if self.params else winter_params

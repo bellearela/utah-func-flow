@@ -2,6 +2,8 @@ TYPES = {
     'all_year_average_annual_flows': "Avg",
     'all_year_standard_deviations': "Std",
     'all_year_coefficient_variations': "CV",
+    'all_year_annual_peaks': "Annual_Peak",
+
     'spring_timings_julian': "HFR_Tim_julian",
     'spring_timings_water': "HFR_Tim",
     'spring_magnitudes': "HFR_Mag",

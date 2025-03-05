@@ -13,10 +13,12 @@ def calc_all_year(flow_matrix, general_params=def_gen_params):
     average_annual_flows = []
     standard_deviations = []
     coefficient_variations = []
+    annual_peak = []
     for index, _ in enumerate(flow_matrix[0]):
         average_annual_flows.append(None)
         standard_deviations.append(None)
         coefficient_variations.append(None)
+        annual_peak.append(None)
 
         """Check to see if water year has more than allowed nan or zeros"""
         if np.isnan(flow_matrix[:, index]).sum() > max_nan_allowed_per_year:
@@ -26,8 +28,9 @@ def calc_all_year(flow_matrix, general_params=def_gen_params):
         standard_deviations[-1] = np.nanstd(flow_matrix[:, index])
         coefficient_variations[-1] = standard_deviations[-1] / \
             average_annual_flows[-1]
+        annual_peak[-1] = np.nanmax(flow_matrix[:, index])
 
-    return average_annual_flows, standard_deviations, coefficient_variations
+    return average_annual_flows, standard_deviations, coefficient_variations, annual_peak
 
 
 def calculate_matrix_percentile(matrix):
@@ -53,7 +56,6 @@ def calculate_average_each_column(matrix):
         index = index + 1
 
     return average
-
 
 def calculate_average_each_row(matrix):
     row_average = []

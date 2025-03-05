@@ -25,6 +25,7 @@ class Gauge:
         self.average_annual_flows = None
         self.standard_deviations = None
         self.coefficient_variations = None
+        self.annual_peaks = None
         self.winter_timings = None
         self.winter_durations = None
         self.winter_frequencys = None
@@ -60,7 +61,7 @@ class Gauge:
         self.hfa_ROC_1090 = None
 
     def all_year(self):
-        average_annual_flows, standard_deviations, coefficient_variations = calc_all_year(
+        average_annual_flows, standard_deviations, coefficient_variations, annual_peaks = calc_all_year(
             self.flow_matrix)
         self.average_annual_flows = np.array(
             average_annual_flows, dtype=float)
@@ -68,6 +69,8 @@ class Gauge:
             standard_deviations, dtype=float)
         self.coefficient_variations = np.array(
             coefficient_variations, dtype=float)
+        self.annual_peaks = np.array(
+            annual_peaks, dtype=float)
 
     def winter_highflow_annual(self):
         winter_timings, winter_durations, winter_frequencys, winter_magnitudes = calc_winter_highflow_annual(
@@ -250,6 +253,8 @@ class Gauge:
             self.standard_deviations, high_end) else ele for index, ele in enumerate(self.standard_deviations)]
         self.coefficient_variations = [np.nan if ele < np.nanpercentile(self.coefficient_variations, low_end) or ele > np.nanpercentile(
             self.coefficient_variations, high_end) else ele for index, ele in enumerate(self.coefficient_variations)]
+        self.annual_peaks = [np.nan if ele < np.nanpercentile(self.annual_peaks, low_end) or ele > np.nanpercentile(
+            self.annual_peaks, high_end) else ele for index, ele in enumerate(self.annual_peaks)]
         spring_timings = [np.nan if ele < np.nanpercentile(self.spring_timings, low_end) or ele > np.nanpercentile(
             self.spring_timings, high_end) else ele for index, ele in enumerate(self.spring_timings)]
         spring_timings_julian = [np.nan if ele < np.nanpercentile(spring_timings_julian, low_end) or ele > np.nanpercentile(
@@ -333,6 +338,7 @@ class Gauge:
         result_matrix.append(self.hfa_ROC_daily)
         result_matrix.append(self.hfa_ROC_1090)
         # all_exceedances = [2, 5, 10, 20, 50, 12, 15, 110, 120] # only ouput peak flows
+        result_matrix.append(self.annual_peaks)
         all_exceedances = [50, 20, 10]
         for percent in all_exceedances:
             result_matrix.append(self.winter_magnitudes[percent])
@@ -357,7 +363,7 @@ class Gauge:
         result_matrix.append(self.slf_dur)
 
         # Exceedance percentiles translated to recurrence intervals for output: exc_50 -> peak_2, exc_20 -> peak_5, exc_10 -> peak_10
-        column_header = ['Year', 'FA_Mag','FA_Tim', 'FA_Dur', 'HF_Mag_10', 'HF_Mag_50','HF_Tim', 'HF_Dur', 'Peak_2', 'Peak_5', 'Peak_10', 'Peak_Dur_2', 'Peak_Dur_5', 'Peak_Dur_10', \
+        column_header = ['Year', 'FA_Mag','FA_Tim', 'FA_Dur', 'HF_Mag_10', 'HF_Mag_50','HF_Tim', 'HF_Dur', 'Annual_Peak', 'Peak_2', 'Peak_5', 'Peak_10', 'Peak_Dur_2', 'Peak_Dur_5', 'Peak_Dur_10', \
                          'Peak_Fre_2', 'Peak_Fre_5', 'Peak_Fre_10', 'SP_Mag', 'SP_Tim', 'SP_Dur', 'SP_ROC', 'LF_Mag_50', 'LF_Mag_90', 'LF_Tim', 'LF_Dur_WS', \
                             'WLF_Mag_50', 'WLF_Mag_90', 'WLF_Dur', 'SLF_Mag_50', 'SLF_Mag_90', 'SLF_Dur']
 

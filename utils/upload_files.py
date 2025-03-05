@@ -57,6 +57,7 @@ def get_result(matrix, julian_start_date, flow_class):
     result["all_year"]["average_annual_flows"] = calculated_metrics.average_annual_flows
     result["all_year"]["standard_deviations"] = calculated_metrics.standard_deviations
     result["all_year"]["coefficient_variations"] = calculated_metrics.coefficient_variations
+    result["all_year"]["annual_peaks"] = calculated_metrics.annual_peaks
 
     result["winter"] = {}
     # Convert key from number to names
@@ -162,6 +163,7 @@ def write_to_csv(file_name, result, file_type, *args):
         dict_to_array(result['fall'], 'fall', dataset)
         dict_to_array(result['wet'], 'wet', dataset)
         dict_to_array(result['winter'], 'winter', dataset)
+        dict_to_array({'annual_peaks':result['all_year']['annual_peaks']}, 'all_year', dataset) 
         dict_to_array(result['hfa'], 'hfa', dataset)
         dict_to_array(result['spring'], 'spring', dataset)
         dict_to_array(result['summer'], 'summer', dataset)
