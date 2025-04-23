@@ -101,7 +101,7 @@ def calc_winter_highflow_annual(matrix, exceedance_percent, winter_params = def_
     result_keys = magnitude.keys()
     for key in result_keys:
         # check if real values in magnitude equal five or more 
-        if len([x for x in magnitude[key] if x is not None]) < 10: # 5 or 10
+        if len([x for x in magnitude[key] if x is not None]) < 5: # 5 or 10
             magnitude[key] = [None] * len(magnitude[key])
             freq[key] = [None] * len(freq[key])
             duration[key] = [None] * len(duration[key])

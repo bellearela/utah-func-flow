@@ -31,7 +31,7 @@ TYPES = {
     'wet_baseflows_10': "HF_Mag_10",
     'wet_baseflows_50': "HF_Mag_50",
     'wet_bfl_durs': "HF_Dur",
-    'hfa_ROC_daily': "HFA_ROC_daily",
+    'hfa_ROC_daily': "HFA_ROC",
     'hfa_ROC_1090': "HFA_ROC_1090",
 
     'winter_timings__two': "Tim_2",
