@@ -154,21 +154,27 @@ def write_to_csv(file_name, result, file_type, *args):
                    '.csv', a, delimiter=',', fmt='%s', comments='')
 
     if file_type == 'annual_flow_result':
-        # remove summer no_flow from main output but save it for supplementary outputs
+        # remove summer no_flow, LF_Mag_50, LF_Mag_90, and LF_Dur from main output but save it for supplementary outputs
         summer_no_flow = result['summer']['no_flow_counts']
+        lf_mag_50 = result['summer']['magnitudes_fifty']
+        lf_mag_90 = result['summer']['magnitudes_ninety']
+        lf_dur = result['summer']['durations_wet']
         del result['summer']['no_flow_counts']
+        del result['summer']['magnitudes_fifty']
+        del result['summer']['magnitudes_ninety']
+        del result['summer']['durations_wet']
 
         dataset = []
         # dict_to_array(result['all_year'], 'all_year', dataset)
-        dict_to_array(result['fall'], 'fall', dataset)
+        # dict_to_array(result['fall'], 'fall', dataset) # Remove fall metrics from all reporting for now
         dict_to_array(result['wet'], 'wet', dataset)
         dict_to_array(result['winter'], 'winter', dataset)
-        dict_to_array({'annual_peaks':result['all_year']['annual_peaks']}, 'all_year', dataset) 
         dict_to_array(result['hfa'], 'hfa', dataset)
         dict_to_array(result['spring'], 'spring', dataset)
         dict_to_array(result['summer'], 'summer', dataset)
         dict_to_array(result['wlf'], 'wlf', dataset)
         dict_to_array(result['slf'], 'slf', dataset)
+
         # Change any nan to None for consistency in output file
         for index, ls in enumerate(dataset):
             for i_index, item in enumerate(ls):
@@ -184,11 +190,16 @@ def write_to_csv(file_name, result, file_type, *args):
         supplementary = []
         supplementary.append(['Avg'] + result['all_year']
                              ['average_annual_flows'])
-        supplementary.append(['Std'] + result['all_year']
-                             ['standard_deviations'])
-        supplementary.append(['CV'] + result['all_year']
-                             ['coefficient_variations'])
-        supplementary.append(['LF_No_Flow'] + summer_no_flow)
+        # supplementary.append(['Std'] + result['all_year']
+        #                      ['standard_deviations'])
+        # supplementary.append(['CV'] + result['all_year']
+        #                      ['coefficient_variations'])
+        # supplementary.append(['LF_No_Flow'] + summer_no_flow)
+        supplementary.append(['LF_Mag_50'] + lf_mag_50)
+        supplementary.append(['LF_Mag_90'] + lf_mag_90)
+        supplementary.append(['LF_Dur'] + lf_dur)
+        supplementary.append(['Annual_Peak'] + result['all_year']
+                             ['annual_peaks'])
         np.savetxt(file_name + '_supplementary_metrics.csv', supplementary, delimiter=',',
                    fmt='%s', header='Year, ' + year_ranges, comments='')
 
