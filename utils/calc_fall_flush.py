@@ -274,9 +274,14 @@ def return_to_wet_date(flow_data, wet_season_filter_data, broad_filter_data, slo
                 search_index = int(maxarray_wet[0][0])
                 break
         else:
-            if (maxarray_wet[index][1]-min_wet_peak_mag)/(max_wet_peak_mag-min_wet_peak_mag) > peak_detect_perc:
-                search_index = int(maxarray_wet[index][0])
-                break
+            if (maxarray_wet[index][1]-min_wet_peak_mag)/(max_wet_peak_mag-min_wet_peak_mag) > peak_detect_perc: 
+                if maxarray_wet[0][0] == 0:
+                    search_index = max_wet_peak_index
+                    break
+                else:
+                    search_index = int(maxarray_wet[index][0])
+                    break          
+
     """Loop backwards from max flow index to beginning, to search for wet season"""
     if not search_index:
         return None
@@ -286,14 +291,16 @@ def return_to_wet_date(flow_data, wet_season_filter_data, broad_filter_data, slo
         elif (value - min_wet_peak_mag) / (max_wet_peak_mag - min_wet_peak_mag) < wet_threshold_perc and abs(spl_first(search_index - index)) < max_wet_peak_mag/slope_sensitivity:
             """If value percentage falls below wet_threshold_perc"""
             return_date = search_index - index
-            
+
+            # put plotting code here
+            # import matplotlib.pyplot as plt
             # plt.figure()
             # plt.plot(flow_data, '-', slope_detection_data, '--')
             # if return_date is not None:
             #     plt.axvline(return_date, color='blue')
-            # plt.axhline((max_wet_peak_mag-min_wet_peak_mag)*.2, color='orange')
+            # plt.axhline(((max_wet_peak_mag-min_wet_peak_mag)*wet_threshold_perc)+min_wet_peak_mag, color='orange')
             # plt.text(364,max(flow_data),str(abs(spl_first(search_index - index))))
-            # plt.savefig('post_processedFiles/Boxplots/{}.png'.format(column_number))
+            # plt.savefig('post_processedFiles/Boxplots/{}.png'.format(column_number))  
 
             return return_date
             
