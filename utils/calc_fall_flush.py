@@ -39,7 +39,7 @@ def calc_fall_flush_timings_durations(flow_matrix, summer_timings, class_number,
             wet_season_filter_data = gaussian_filter1d(flow_data, wet_season_sigma)
         broad_filter_data = gaussian_filter1d(flow_data, broad_sigma)
         if class_number == 1 or class_number == 2 or class_number == 9:
-            slope_detection_data = gaussian_filter1d(flow_data, 7)
+            slope_detection_data = gaussian_filter1d(flow_data, 4)
         elif class_number == 3 or class_number == 4 or class_number == 5 or class_number == 6 or class_number == 7 or class_number == 8: 
             slope_detection_data = gaussian_filter1d(flow_data, 1)
         else:
@@ -288,14 +288,17 @@ def return_to_wet_date(flow_data, wet_season_filter_data, broad_filter_data, slo
     for index, value in enumerate(reversed(wet_season_filter_data[:search_index])):
         if index == len(wet_season_filter_data[:search_index] - 1):
             return None
-        elif (value - min_wet_peak_mag) / (max_wet_peak_mag - min_wet_peak_mag) < wet_threshold_perc and abs(spl_first(search_index - index)) < max_wet_peak_mag/slope_sensitivity:
+        elif spl_first(search_index - index) < 0: # require that slope direction is increasing
+            continue 
+        elif (value - min_wet_peak_mag) / (max_wet_peak_mag - min_wet_peak_mag) < wet_threshold_perc and spl_first(search_index - index) < max_wet_peak_mag/slope_sensitivity:
             """If value percentage falls below wet_threshold_perc"""
             return_date = search_index - index
 
-            # put plotting code here
             # import matplotlib.pyplot as plt
             # plt.figure()
-            # plt.plot(flow_data, '-', slope_detection_data, '--')
+            # plt.plot(flow_data, '-', color='blue')
+            # plt.plot(broad_filter_data, '.', color='green')
+            # plt.plot(slope_detection_data, '--', color='purple')
             # if return_date is not None:
             #     plt.axvline(return_date, color='blue')
             # plt.axhline(((max_wet_peak_mag-min_wet_peak_mag)*wet_threshold_perc)+min_wet_peak_mag, color='orange')
@@ -306,8 +309,11 @@ def return_to_wet_date(flow_data, wet_season_filter_data, broad_filter_data, slo
             
 
 def _plotter(x_axis, flow_data, filter_data, broad_filter_data, start_dates, wet_dates, column_number, left, right, maxarray, minarray, min_flush_magnitude, slope_detection_data):
+    import matplotlib.pyplot as plt
     plt.figure()
-    plt.plot(x_axis, flow_data)
+    plt.plot(x_axis, flow_data, color='blue')
+    plt.plot(x_axis, broad_filter_data, color='red')
+    plt.plot(x_axis, filter_data, color='green')
     #plt.plot(x_axis, filter_data)
     plt.plot(x_axis, slope_detection_data, color='orange')
     # for data in maxarray:
